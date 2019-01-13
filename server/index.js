@@ -10,7 +10,9 @@ const serveStatic = require('koa-static');
 const HTTP_PORT = process.env.PORT || 3000;
 
 const app = new Koa();
+const Datastore = require('./Datastore');
 
+const db = new Datastore({ filename: path.join(__dirname, '..', 'datastore.json') });
 app.use(cors());
 app.use(compress({
     threshold: 4096,
@@ -26,6 +28,17 @@ router.get('/sw.js', async (ctx) => {
     ctx.response.body = swSource;
 });
 
+
+router.get('/projects', async (ctx)=>{
+  const result = await db.getProjects();
+  ctx.response.body = result;
+});
+
+router.post('/projects', async (ctx) => {
+  const attrs = ctx.request.body;
+  const result = await db.createProject(attrs);
+  ctx.response.body = result;
+});
 
 app.use(router.routes());
 app.use(router.allowedMethods());

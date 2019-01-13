@@ -24,3 +24,19 @@ self.addEventListener('install', (event) => { // eslint-disable-line no-restrict
   console.log('inside install');
   event.waitUntil(precache(PRECACHE_URLS));
 });
+
+self.addEventListener('fetch', (event) => {
+  console.log("worker inside fetch listener");
+  console.log(event);
+  const request = new URL(event.request.url);
+  if(request.pathname === '/') {
+    const response = new Response("Hello repsone", {
+      status: 200
+    });
+    event.respondWith(response);
+  }
+  else {
+    event.respondWith(fetch(event.request));
+    console.log('else');
+  }
+});
