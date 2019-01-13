@@ -3,7 +3,7 @@ import 'material-design-lite';
 
 import { readProjectList } from './api';
 
-import './Application.scss';
+import './Applications.scss';
 
 const projectTemplate = ({ id, name, taskCount }) => html`
   <div data-project-id="${id}" class="mdl-card mdl-shadow--2dp full-width">

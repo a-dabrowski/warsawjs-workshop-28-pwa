@@ -26,17 +26,19 @@ self.addEventListener('install', (event) => { // eslint-disable-line no-restrict
 });
 
 self.addEventListener('fetch', (event) => {
-  console.log("worker inside fetch listener");
-  console.log(event);
-  const request = new URL(event.request.url);
-  if(request.pathname === '/') {
-    const response = new Response("Hello repsone", {
-      status: 200
-    });
-    event.respondWith(response);
-  }
-  else {
+
+
+  const requestUrl = new URL(event.request.url);
+  if (requestUrl.pathname === '/') {
+    event.respondWith(staleWhileRevalidate(event.request));
+  } else if (
+    PRECACHE_URLS.includes(requestUrl.href) || PRECACHE_URLS.includes(requestUrl.pathname)
+  ) {
+    event.respondWith(cacheThenNetwork(event.request));
+  } else {
     event.respondWith(fetch(event.request));
-    console.log('else');
   }
+
+
+
 });
